@@ -1,0 +1,10 @@
+Package: com.pixelomer.forgeddit
+Name: Forgeddit
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Reddit history eraser
+  This is a tweak that makes it easy to erase old Reddit comments.
+Maintainer: pixelomer
+Author: pixelomer
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
