@@ -17,7 +17,7 @@ static NSArray *_deletionOptions;
 			@""
 		];
 		_deletionOptions = @[
-			@"Overwrite",
+			@"Overwrite (Recommended)",
 			@"Delete"
 		];
 	}
@@ -100,7 +100,7 @@ static NSArray *_deletionOptions;
 						pushViewController:[[PXForgedditProgressViewController alloc]
 							initWithService:_service
 							deletionType:_selectedType
-							endDate:_datePicker.date
+							beforeDate:_datePicker.date
 						]
 						animated:YES
 					];

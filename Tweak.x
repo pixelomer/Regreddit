@@ -55,7 +55,6 @@ static UIWindow *forgedditWindow;
 		%orig;
 		return;
 	}
-	NSLog(@"Sending test request");
 	RedditService *service = self.accountContext.redditService;
 	UINavigationController *navigationController = [[UINavigationController alloc]
 		initWithRootViewController:[[PXForgedditWizardViewController alloc]

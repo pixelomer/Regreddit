@@ -9,6 +9,7 @@
 
 @interface User : NSObject
 - (NSString *)displayNamePrefixed;
+- (NSString *)pk;
 @end
 
 @interface Account : NSObject
