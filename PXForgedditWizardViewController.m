@@ -17,8 +17,9 @@ static NSArray *_deletionOptions;
 			@""
 		];
 		_deletionOptions = @[
-			@"Overwrite (Recommended)",
-			@"Delete"
+			@"Overwrite",
+			@"Delete",
+			@"Preview (No deletion)"
 		];
 	}
 }
@@ -73,13 +74,32 @@ static NSArray *_deletionOptions;
 			[self.tableView
 				reloadRowsAtIndexPaths:@[
 					[NSIndexPath indexPathForRow:oldRow inSection:1],
-					[NSIndexPath indexPathForRow:indexPath.row inSection:1]
+					[NSIndexPath indexPathForRow:indexPath.row inSection:1],
+					[NSIndexPath indexPathForRow:0 inSection:2]
 				]
 				withRowAnimation:UITableViewRowAnimationNone
 			];
 			break;
 		}
 		case 2: {
+			void(^continueHandler)(UIAlertAction *) = ^(UIAlertAction * action){
+				_didStart = YES;
+				if (@available(iOS 13.0, *)) {
+					self.modalInPresentation = YES;
+				}
+				[self.navigationController
+					pushViewController:[[PXForgedditProgressViewController alloc]
+						initWithService:_service
+						deletionType:_selectedType
+						beforeDate:_datePicker.date
+					]
+					animated:YES
+				];
+			};
+			if (_selectedType == PXForgedditDeletionTypePreview) {
+				continueHandler(nil);
+				break;
+			}
 			UIAlertController *alert = [UIAlertController
 				alertControllerWithTitle:@"Warning"
 				message:[NSString
@@ -91,20 +111,7 @@ static NSArray *_deletionOptions;
 			[alert addAction:[UIAlertAction
 				actionWithTitle:@"Continue"
 				style:UIAlertActionStyleDestructive
-				handler:^(UIAlertAction * action){
-					_didStart = YES;
-					if (@available(iOS 13.0, *)) {
-						self.modalInPresentation = YES;
-					}
-					[self.navigationController
-						pushViewController:[[PXForgedditProgressViewController alloc]
-							initWithService:_service
-							deletionType:_selectedType
-							beforeDate:_datePicker.date
-						]
-						animated:YES
-					];
-				}
+				handler:continueHandler
 			]];
 			[alert addAction:[UIAlertAction
 				actionWithTitle:@"Cancel"
@@ -164,8 +171,14 @@ static NSArray *_deletionOptions;
 			}
 			break;
 		case 2:
-			cell.textLabel.textColor = [UIColor redColor];
-			cell.textLabel.text = @"Start Deleting";
+			if (_selectedType == PXForgedditDeletionTypePreview) {
+				cell.textLabel.text = @"Preview";
+				cell.textLabel.textColor = cell.tintColor;
+			}
+			else {
+				cell.textLabel.text = @"Start Deleting";
+				cell.textLabel.textColor = [UIColor redColor];
+			}
 			cell.textLabel.textAlignment = NSTextAlignmentCenter;
 			break;
 	}

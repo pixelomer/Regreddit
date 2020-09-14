@@ -12,20 +12,43 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 	[self dismissViewControllerAnimated:YES completion:nil];
 }
 
+- (void)logsPush {
+	if (_pushedLogs) {
+		[NSException raise:NSInvalidArgumentException format:@"Attemted to push logs before popping."];
+	}
+	_pushedLogs = [_logs mutableCopy];
+}
+
 - (void)logWithTitle:(NSString *)title
 	description:(NSString *)description
 	error:(BOOL)error
 {
+	NSArray *newLog = @[
+		title,
+		description,
+		@(error)
+	];
+	if (_pushedLogs) {
+		[_pushedLogs insertObject:newLog atIndex:0];
+		return;
+	}
 	dispatch_sync(dispatch_get_main_queue(), ^{
-		[_logs insertObject:@[
-			title,
-			description,
-			@(error)
-		] atIndex:0];
+		[_logs insertObject:newLog atIndex:0];
 		[self.tableView
 			insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]
 			withRowAnimation:UITableViewRowAnimationAutomatic
 		];
+	});
+}
+
+- (void)logsPop {
+	if (!_pushedLogs) {
+		[NSException raise:NSInvalidArgumentException format:@"No logs were pushed."];
+	}
+	dispatch_sync(dispatch_get_main_queue(), ^{
+		_logs = _pushedLogs;
+		_pushedLogs = nil;
+		[self.tableView reloadData];
 	});
 }
 
@@ -134,8 +157,11 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 		}
 		NSLog(@"Next page: %@", nextPageID);
 	}
-	[self logWithTitle:@"Finished fetching comments." description:@"Forgeddit will start deleting comments shortly." error:NO];
+	[self logWithTitle:@"Finished fetching comments." description:@"Operation will start shortly." error:NO];
 	PXForgedditCompletion state = PXForgedditCompletionSuccess;
+	if (_deletionType == PXForgedditDeletionTypePreview) {
+		[self logsPush];
+	}
 	for (NSDictionary *comment in commentsToDelete) {
 		error = nil;
 		response = nil;
@@ -168,6 +194,17 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 					error:&error
 				];
 				break;
+			case PXForgedditDeletionTypePreview:
+				break;
+		}
+		if (_deletionType == PXForgedditDeletionTypePreview) {
+			[self
+				logWithTitle:[NSString stringWithFormat:@"Would delete \"%@\"", comment[@"id"]]
+				description:comment[@"body"]
+				error:NO
+			];
+			//usleep(200000);
+			continue;
 		}
 		if (response && (response.statusCode == 200) && !error) {
 			[self
@@ -185,6 +222,9 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 			state = PXForgedditCompletionWithErrors;
 		}
 	}
+	if (_deletionType == PXForgedditDeletionTypePreview) {
+		[self logsPop];
+	}
 	return state;
 }
 
@@ -193,13 +233,13 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 	NSString *message = nil;
 	switch (state) {
 		case PXForgedditCompletionSuccess:
-			message = @"Deletion completed succesfully.";
+			message = @"Operation completed succesfully.";
 			break;
 		case PXForgedditCompletionWithErrors:
-			message = @"Deletion completed with one or more errors.";
+			message = @"Operation completed with one or more errors.";
 			break;
 		case PXForgedditCompletionFailure:
-			message = @"Deletion failed.";
+			message = @"Operation failed.";
 			break;
 	}
 	[self
