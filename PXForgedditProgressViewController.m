@@ -55,7 +55,6 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 - (NSDictionary *)performAuthenticatedRequestWithMethod:(NSString *)method
 	URL:(NSString *)URL
 	data:(NSString *)body
-	shouldSleep:(BOOL)shouldSleep
 	response:(out NSHTTPURLResponse **)responsePt
 	error:(out NSError **)errorPt
 {
@@ -72,7 +71,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 		forHTTPHeaderField:@"Reddit-User_Id"
 	];
 	[request
-		setValue:@"Forgeddit/1.0 https://github.com/pixelomer/forgeddit"
+		setValue:@"iOS:Forgeddit:1.0 (by u/pxOMR)"
 		forHTTPHeaderField:@"User-Agent"
 	];
 	request.HTTPBody = [body dataUsingEncoding:NSASCIIStringEncoding];
@@ -91,7 +90,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 			] error:NO];
 			sleep([(response.allHeaderFields[@"Retry-After"] ?: @"2") intValue]);
 		}
-		else if (shouldSleep) {
+		else {
 			sleep(2);
 		}
 	}
@@ -125,7 +124,6 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 				nextPageID
 			]
 			data:nil
-			shouldSleep:NO
 			response:&response
 			error:&error
 		];
@@ -171,7 +169,6 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 					performAuthenticatedRequestWithMethod:@"POST"
 					URL:@"https://oauth.reddit.com/api/del"
 					data:[NSString stringWithFormat:@"id=t1_%@", comment[@"id"]]
-					shouldSleep:YES
 					response:&response
 					error:&error
 				];
@@ -189,7 +186,6 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 						@"%2A%2AThis%20comment%20was%20automatically%20deleted%20by%20%5BForgeddit%5D%28https%3A%2F%2Fgithub.com%2Fpixelomer%2FForgeddit%29.%2A%2A",
 						comment[@"id"]
 					]
-					shouldSleep:YES
 					response:&response
 					error:&error
 				];
