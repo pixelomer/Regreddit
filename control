@@ -12,4 +12,5 @@ Description: Reddit Comment Deleter
 Maintainer: pixelomer
 Author: pixelomer
 Section: Tweaks
+Homepage: https://github.com/pixelomer/Regreddit
 Depends: mobilesubstrate (>= 0.9.5000)
