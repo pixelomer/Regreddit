@@ -1,5 +1,5 @@
-#ifndef __FORGEDDIT_MACROS_H
-#define __FORGEDDIT_MACROS_H
+#ifndef __REGREDDIT_MACROS_H
+#define __REGREDDIT_MACROS_H
 
 #import <UIKit/UIKit.h>
 
@@ -33,12 +33,12 @@
 - (RedditAccountContext *)accountContext;
 @end
 
-@interface UIImageView(Forgeddit)
-@property (nonatomic, assign) BOOL __forgeddit_readonly;
+@interface UIImageView(Regreddit)
+@property (nonatomic, assign) BOOL __regreddit_readonly;
 @end
 
 @interface UITableViewLabel : UILabel
-@property (nonatomic, assign) BOOL __forgeddit_readonly;
+@property (nonatomic, assign) BOOL __regreddit_readonly;
 @end
 
 #endif

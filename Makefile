@@ -3,9 +3,9 @@ ARCHS = arm64e arm64 armv7
 
 include $(THEOS)/makefiles/common.mk
 
-TWEAK_NAME = Forgeddit
+TWEAK_NAME = Regreddit
 
-Forgeddit_FILES = Tweak.x $(wildcard *.m)
-Forgeddit_CFLAGS = -fobjc-arc -include macros.h
+Regreddit_FILES = Tweak.x $(wildcard *.m)
+Regreddit_CFLAGS = -fobjc-arc -include macros.h
 
 include $(THEOS_MAKE_PATH)/tweak.mk

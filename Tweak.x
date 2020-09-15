@@ -1,24 +1,24 @@
 #import <Foundation/Foundation.h>
-#import "PXForgedditWizardViewController.h"
+#import "PXRegredditWizardViewController.h"
 
 // See the -[UserDrawerViewController tableView:cellForRowAtIndexPath:]
-// to see why the __forgeddit_readonly property is added to UIImageView
+// to see why the __regreddit_readonly property is added to UIImageView
 // and UITableViewLabel.
 
 %hook UIImageView
-%property (nonatomic, assign) BOOL __forgeddit_readonly;
+%property (nonatomic, assign) BOOL __regreddit_readonly;
 
 - (void)setImage:(UIImage *)image {
-	if (!self.__forgeddit_readonly) %orig;
+	if (!self.__regreddit_readonly) %orig;
 }
 
 %end
 
 %hook UITableViewLabel
-%property (nonatomic, assign) BOOL __forgeddit_readonly;
+%property (nonatomic, assign) BOOL __regreddit_readonly;
 
 - (void)setText:(NSString *)text {
-	if (!self.__forgeddit_readonly) %orig;
+	if (!self.__regreddit_readonly) %orig;
 }
 
 %end
@@ -38,7 +38,7 @@
 	if (indexPath.section != 1) {
 		return %orig;
 	}
-	NSString * const cellID = @"__forgeddit_cell";
+	NSString * const cellID = @"__regreddit_cell";
 	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
 	if (!cell) {
 		cell = [(UITableViewCell *)[%c(UserDrawerActionTableViewCell) alloc]
@@ -51,12 +51,12 @@
 		// Something in the Reddit code modifies some UITableViewCell data
 		// after it is returned from "tableView:cellForRowAtIndexPath:".
 		// To get around this, I added a property to UITableViewLabel
-		// and UIImageView called __forgeddit_readonly. When this property
+		// and UIImageView called __regreddit_readonly. When this property
 		// is set to true, messages -[UITableViewLabel setText:] and
 		// -[UIImageView setImage:] are ignored. This is probably not the
 		// best solution, but it works ¯\_(ツ)_/¯
-		((UITableViewLabel *)cell.textLabel).__forgeddit_readonly = YES;
-		cell.imageView.__forgeddit_readonly = YES;
+		((UITableViewLabel *)cell.textLabel).__regreddit_readonly = YES;
+		cell.imageView.__regreddit_readonly = YES;
 	
 	}
 	return cell;
@@ -69,7 +69,7 @@
 	}
 	RedditService *service = self.accountContext.redditService;
 	UINavigationController *navigationController = [[UINavigationController alloc]
-		initWithRootViewController:[[PXForgedditWizardViewController alloc]
+		initWithRootViewController:[[PXRegredditWizardViewController alloc]
 			initWithService:service
 		]
 	];

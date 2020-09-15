@@ -1,12 +1,12 @@
-#import "PXForgedditProgressViewController.h"
+#import "PXRegredditProgressViewController.h"
 
-typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
-	PXForgedditCompletionSuccess = 0,
-	PXForgedditCompletionWithErrors = 1,
-	PXForgedditCompletionFailure = 2
+typedef NS_ENUM(NSInteger, PXRegredditCompletion) {
+	PXRegredditCompletionSuccess = 0,
+	PXRegredditCompletionWithErrors = 1,
+	PXRegredditCompletionFailure = 2
 };
 
-@implementation PXForgedditProgressViewController
+@implementation PXRegredditProgressViewController
 
 - (void)didPressDoneButton {
 	[self dismissViewControllerAnimated:YES completion:nil];
@@ -71,7 +71,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 		forHTTPHeaderField:@"Reddit-User_Id"
 	];
 	[request
-		setValue:@"iOS:Forgeddit:1.0 (by u/pxOMR)"
+		setValue:@"iOS:Regreddit:1.0 (by u/pxOMR)"
 		forHTTPHeaderField:@"User-Agent"
 	];
 	request.HTTPBody = [body dataUsingEncoding:NSASCIIStringEncoding];
@@ -107,7 +107,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 	return result;
 }
 
-- (PXForgedditCompletion)performDeletion {
+- (PXRegredditCompletion)performDeletion {
 	NSString *nextPageID = @"";
 	NSMutableArray *commentsToDelete = [NSMutableArray new];
 	NSHTTPURLResponse *response = nil;
@@ -138,7 +138,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 				]
 				error:YES
 			];
-			return PXForgedditCompletionFailure;
+			return PXRegredditCompletionFailure;
 		}
 		NSDictionary *listingData = result[@"data"];
 		nextPageID = listingData[@"after"];
@@ -156,15 +156,15 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 		NSLog(@"Next page: %@", nextPageID);
 	}
 	[self logWithTitle:@"Finished fetching comments." description:@"Operation will start shortly." error:NO];
-	PXForgedditCompletion state = PXForgedditCompletionSuccess;
-	if (_deletionType == PXForgedditDeletionTypePreview) {
+	PXRegredditCompletion state = PXRegredditCompletionSuccess;
+	if (_deletionType == PXRegredditDeletionTypePreview) {
 		[self logsPush];
 	}
 	for (NSDictionary *comment in commentsToDelete) {
 		error = nil;
 		response = nil;
 		switch (_deletionType) {
-			case PXForgedditDeletionTypeDelete:
+			case PXRegredditDeletionTypeDelete:
 				[self
 					performAuthenticatedRequestWithMethod:@"POST"
 					URL:@"https://oauth.reddit.com/api/del"
@@ -173,7 +173,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 					error:&error
 				];
 				break;
-			case PXForgedditDeletionTypeOverwrite:
+			case PXRegredditDeletionTypeOverwrite:
 				[self
 					performAuthenticatedRequestWithMethod:@"POST"
 					URL:@"https://oauth.reddit.com/api/editusertext"
@@ -183,17 +183,17 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 							@"text=%@&"
 							@"thing_id=t1_%@"
 						),
-						@"%2A%2AThis%20comment%20was%20automatically%20deleted%20by%20%5BForgeddit%5D%28https%3A%2F%2Fgithub.com%2Fpixelomer%2FRegreddit%29.%2A%2A",
+						@"%2A%2AThis%20comment%20was%20automatically%20deleted%20by%20%5BRegreddit%5D%28https%3A%2F%2Fgithub.com%2Fpixelomer%2FRegreddit%29.%2A%2A",
 						comment[@"id"]
 					]
 					response:&response
 					error:&error
 				];
 				break;
-			case PXForgedditDeletionTypePreview:
+			case PXRegredditDeletionTypePreview:
 				break;
 		}
-		if (_deletionType == PXForgedditDeletionTypePreview) {
+		if (_deletionType == PXRegredditDeletionTypePreview) {
 			[self
 				logWithTitle:[NSString stringWithFormat:@"Would delete \"%@\"", comment[@"id"]]
 				description:comment[@"body"]
@@ -215,26 +215,26 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 				description:comment[@"body"]
 				error:YES
 			];
-			state = PXForgedditCompletionWithErrors;
+			state = PXRegredditCompletionWithErrors;
 		}
 	}
-	if (_deletionType == PXForgedditDeletionTypePreview) {
+	if (_deletionType == PXRegredditDeletionTypePreview) {
 		[self logsPop];
 	}
 	return state;
 }
 
 - (void)performDeletion:(id)unused {
-	PXForgedditCompletion state = [self performDeletion];
+	PXRegredditCompletion state = [self performDeletion];
 	NSString *message = nil;
 	switch (state) {
-		case PXForgedditCompletionSuccess:
+		case PXRegredditCompletionSuccess:
 			message = @"Operation completed succesfully.";
 			break;
-		case PXForgedditCompletionWithErrors:
+		case PXRegredditCompletionWithErrors:
 			message = @"Operation completed with one or more errors.";
 			break;
-		case PXForgedditCompletionFailure:
+		case PXRegredditCompletionFailure:
 			message = @"Operation failed.";
 			break;
 	}
@@ -254,7 +254,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 }
 
 - (instancetype)initWithService:(RedditService *)service
-	deletionType:(PXForgedditDeletionType)deletionType
+	deletionType:(PXRegredditDeletionType)deletionType
 	beforeDate:(NSDate *)beforeDate
 {
 	if ((self = [super initWithStyle:UITableViewStylePlain])) {

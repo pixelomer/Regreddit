@@ -1,13 +1,13 @@
-#import "PXForgedditWizardViewController.h"
+#import "PXRegredditWizardViewController.h"
 
-@implementation PXForgedditWizardViewController
+@implementation PXRegredditWizardViewController
 
 static NSArray *_titles;
 static NSDateFormatter *_dateFormatter;
 static NSArray *_deletionOptions;
 
 + (void)load {
-	if (self == [PXForgedditWizardViewController class]) {
+	if (self == [PXRegredditWizardViewController class]) {
 		_dateFormatter = [NSDateFormatter new];
 		_dateFormatter.timeStyle = NSDateFormatterShortStyle;
 		_dateFormatter.dateStyle = NSDateFormatterLongStyle;
@@ -88,7 +88,7 @@ static NSArray *_deletionOptions;
 					self.modalInPresentation = YES;
 				}
 				[self.navigationController
-					pushViewController:[[PXForgedditProgressViewController alloc]
+					pushViewController:[[PXRegredditProgressViewController alloc]
 						initWithService:_service
 						deletionType:_selectedType
 						beforeDate:_datePicker.date
@@ -96,7 +96,7 @@ static NSArray *_deletionOptions;
 					animated:YES
 				];
 			};
-			if (_selectedType == PXForgedditDeletionTypePreview) {
+			if (_selectedType == PXRegredditDeletionTypePreview) {
 				continueHandler(nil);
 				break;
 			}
@@ -171,7 +171,7 @@ static NSArray *_deletionOptions;
 			}
 			break;
 		case 2:
-			if (_selectedType == PXForgedditDeletionTypePreview) {
+			if (_selectedType == PXRegredditDeletionTypePreview) {
 				cell.textLabel.text = @"Preview";
 				cell.textLabel.textColor = cell.tintColor;
 			}

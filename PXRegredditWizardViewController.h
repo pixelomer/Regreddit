@@ -1,10 +1,10 @@
 #import <UIKit/UIKit.h>
-#import "PXForgedditProgressViewController.h"
+#import "PXRegredditProgressViewController.h"
 
-@interface PXForgedditWizardViewController : UITableViewController {
+@interface PXRegredditWizardViewController : UITableViewController {
 	UIDatePicker *_datePicker;
 	BOOL _didStart;
-	PXForgedditDeletionType _selectedType;
+	PXRegredditDeletionType _selectedType;
 }
 @property (nonatomic, weak, readonly) RedditService *service;
 - (instancetype)initWithService:(RedditService *)service;
