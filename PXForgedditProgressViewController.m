@@ -183,7 +183,7 @@ typedef NS_ENUM(NSInteger, PXForgedditCompletion) {
 							@"text=%@&"
 							@"thing_id=t1_%@"
 						),
-						@"%2A%2AThis%20comment%20was%20automatically%20deleted%20by%20%5BForgeddit%5D%28https%3A%2F%2Fgithub.com%2Fpixelomer%2FForgeddit%29.%2A%2A",
+						@"%2A%2AThis%20comment%20was%20automatically%20deleted%20by%20%5BForgeddit%5D%28https%3A%2F%2Fgithub.com%2Fpixelomer%2FRegreddit%29.%2A%2A",
 						comment[@"id"]
 					]
 					response:&response

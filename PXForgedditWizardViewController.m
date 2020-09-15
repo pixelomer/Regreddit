@@ -60,7 +60,7 @@ static NSArray *_deletionOptions;
 		];
 		self.tableView.delegate = self;
 		self.tableView.dataSource = self;
-		self.title = @"Delete History";
+		self.title = @"Comment Deleter";
 	}
 	return self;
 }

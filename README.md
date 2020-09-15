@@ -1,2 +1,2 @@
-# Forgeddit
- Tweak for easily deleting old comments on Reddit right from the Reddit app on iOS
+# Regreddit (codenamed Forgeddit)
+Comment deleter tweak for the official Reddit iOS app

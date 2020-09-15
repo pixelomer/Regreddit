@@ -1,7 +1,9 @@
 #import <Foundation/Foundation.h>
 #import "PXForgedditWizardViewController.h"
 
-static UIWindow *forgedditWindow;
+// See the -[UserDrawerViewController tableView:cellForRowAtIndexPath:]
+// to see why the __forgeddit_readonly property is added to UIImageView
+// and UITableViewLabel.
 
 %hook UIImageView
 %property (nonatomic, assign) BOOL __forgeddit_readonly;
@@ -36,16 +38,26 @@ static UIWindow *forgedditWindow;
 	if (indexPath.section != 1) {
 		return %orig;
 	}
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"__forgedditCell"];
+	NSString * const cellID = @"__forgeddit_cell";
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:cellID];
 	if (!cell) {
 		cell = [(UITableViewCell *)[%c(UserDrawerActionTableViewCell) alloc]
 			initWithStyle:UITableViewCellStyleSubtitle
-			reuseIdentifier:@"__forgedditCell"
+			reuseIdentifier:cellID
 		];
-		cell.textLabel.text = @"Delete History";
+		cell.textLabel.text = @"Comment Deleter";
 		cell.imageView.image = [UIImage imageNamed:@"icon_delete_20"];
+
+		// Something in the Reddit code modifies some UITableViewCell data
+		// after it is returned from "tableView:cellForRowAtIndexPath:".
+		// To get around this, I added a property to UITableViewLabel
+		// and UIImageView called __forgeddit_readonly. When this property
+		// is set to true, messages -[UITableViewLabel setText:] and
+		// -[UIImageView setImage:] are ignored. This is probably not the
+		// best solution, but it works ¯\_(ツ)_/¯
 		((UITableViewLabel *)cell.textLabel).__forgeddit_readonly = YES;
 		cell.imageView.__forgeddit_readonly = YES;
+	
 	}
 	return cell;
 }
@@ -72,7 +84,3 @@ static UIWindow *forgedditWindow;
 }
 
 %end
-
-%ctor {
-	%init;
-}

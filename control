@@ -1,9 +1,14 @@
 Package: com.pixelomer.forgeddit
-Name: Forgeddit
-Version: 0.0.1
+Name: Regreddit
+Version: 1.0
 Architecture: iphoneos-arm
-Description: Reddit history eraser
-  This is a tweak that makes it easy to erase old Reddit comments.
+Description: Reddit Comment Deleter
+  Regreddit is an easy-to-use comment deleter for the official Reddit app for iOS.
+  This tweak can be accessed by pressing "Comment Deleter" in the user drawer on the left side of the Reddit app.
+  .
+  No specific version of Reddit is required. This tweak was tested with version 2020.34.0.
+  .
+  This tweak will work on any iOS version higher than iOS 7.0. However, the Reddit app (2020.34.0) itself requires at iOS 12.0 or higher.
 Maintainer: pixelomer
 Author: pixelomer
 Section: Tweaks
